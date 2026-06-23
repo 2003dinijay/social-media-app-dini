@@ -8,6 +8,9 @@ service /social_media on new http:Listener(9090) {
     }
 
     // GET /social_media/users/{id}
+
+    //creating a subtype of http:NotFound for better error handling when user is not found in DB
+    //resource fuction is a GET endpoint that takes an id as a path parameter and returns either a User record, a UserNotFound error, or a generic error
     resource function get users/[int id]() returns User|UserNotFound|error {
         return getUserById(id);
     }

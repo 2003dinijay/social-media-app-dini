@@ -32,6 +32,8 @@ public type NewPost record {|
 |};
 
 // Error response types
+
+//types inclusion
 public type UserNotFound record {|
     *http:NotFound;
     string body = "User not found";
