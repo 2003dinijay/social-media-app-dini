@@ -58,8 +58,8 @@ users ──< followers >── users
 | 2 | Database access (MySQL)        | ✅ Done |
 | 3 | Configurability (Config.toml)  | ✅ Done |
 | 4 | Data transformation            | ✅ Done |
-| 5 | HTTP Client                    | 🔄 In Progress |
-| 6 | Resiliency & Retry             | ⏳ Pending |
+| 5 | HTTP Client                    | ✅ Done |
+| 6 | Resiliency & Retry             | 🔄 In Progress |
 | 7 | Writing tests                  | ⏳ Pending |
 | 8 | Slack connector                | ⏳ Pending |
 | 9 | OpenAPI & client stubs         | ⏳ Pending |
