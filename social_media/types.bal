@@ -51,3 +51,21 @@ public type PostForbidden record {|
     *http:Forbidden;
     string body = "Post content is not allowed";
 |};
+
+
+//sentiment analysis request record
+
+public type SentimentRequest record{|
+    string text;
+|}
+
+//sentiment analysis response record
+
+public type sentimentResponse record{|
+    record {|
+    string label;
+    float probability;
+|}[] probabilities;
+string predictedLabel;
+
+|};
