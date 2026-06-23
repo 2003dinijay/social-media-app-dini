@@ -2,14 +2,20 @@ import ballerinax/mysql;
 import ballerinax/mysql.driver as _;
 import ballerina/sql;
 
-// Database client
+configurable string dbHost = "localhost";
+configurable string dbUser = "root";
+configurable string dbPassword = ?;
+configurable string dbName = "social_media_database";
+configurable int dbPort = 3306;
+
 final mysql:Client dbClient = check new (
-    host = "localhost",
-    user = "root",
-    password = "Dinithi@123",
-    database = "social_media_database",
-    port = 3306
+    host = dbHost,
+    user = dbUser,
+    password = dbPassword,
+    database = dbName,
+    port = dbPort
 );
+
 
 isolated function getAllUsers() returns User[]|error {
     stream<User, sql:Error?> userStream = dbClient->query(`SELECT id, name, birth_date, mobile_number FROM users`);
