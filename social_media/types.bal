@@ -36,3 +36,18 @@ public type UserNotFound record {|
     *http:NotFound;
     string body = "User not found";
 |};
+
+// Full post record matching DB structure
+public type Post record {|
+    string description;
+    string category;
+    string tags;
+    string created_date;
+    int user_id;
+|};
+
+// Error type for forbidden posts
+public type PostForbidden record {|
+    *http:Forbidden;
+    string body = "Post content is not allowed";
+|};
