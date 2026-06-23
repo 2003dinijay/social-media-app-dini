@@ -6,3 +6,7 @@ distribution = "2201.13.4"
 
 [build-options]
 observabilityIncluded = true
+
+[dependencies]
+"ballerinax/mysql" = "1.14.2"
+"ballerinax/java.jdbc" = "1.11.1"
