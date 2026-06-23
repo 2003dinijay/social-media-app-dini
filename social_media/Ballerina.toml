@@ -1,0 +1,8 @@
+[package]
+org = "dinijay"
+name = "social_media"
+version = "0.1.0"
+distribution = "2201.13.4"
+
+[build-options]
+observabilityIncluded = true
