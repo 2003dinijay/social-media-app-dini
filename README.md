@@ -6,7 +6,7 @@ A Twitter-like Social Media REST API built from scratch using **Ballerina**, dev
 
 ## 📌 Project Overview
 
-This project is a backend REST API for a social media platform supporting users, posts, and followers. It is built progressively, covering 14 features of the Ballerina language and ecosystem — from basic REST APIs to security, message brokers, and concurrency.
+This project is a backend REST API for a social media platform supporting users, posts, and followers. It is built progressively, covering 14 features of the Ballerina language and ecosystem from basic REST APIs to security, message brokers, and concurrency.
 
 ---
 
@@ -132,6 +132,6 @@ social-media-app-dini/
 
 ## 👩‍💻 Author
 
-**Dinijay** — WSO2 Intern  
+**Dinijay**- WSO2 Intern  
 GitHub: [@2003dinijay](https://github.com/2003dinijay)
 ```
