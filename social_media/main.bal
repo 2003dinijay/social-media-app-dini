@@ -1,14 +1,37 @@
 import ballerina/http;
 
-service /social_media on new http:listener(9090){
+service /social_media on new http:Listener(9090) {
 
-     // GET /social_media/users
-
-     resource function get users() returns USER[] | error{
-        RETURN getallUsers();
-     }
-    //GET /social_media/users
-    resource function get users(string id) returns USER | error{
-            return getUsersById(id);
+    // GET /social_media/users
+    resource function get users() returns User[]|error {
+        return getAllUsers();
     }
-    //GET /social_media
+
+    // GET /social_media/users/{id}
+    resource function get users/[int id]() returns User|UserNotFound|error {
+        return getUserById(id);
+    }
+
+    // POST /social_media/users
+    resource function post users(NewUser newUser) returns http:Created|error {
+        check addUser(newUser);
+        return http:CREATED;
+    }
+
+    // DELETE /social_media/users/{id}
+    resource function delete users/[int id]() returns http:NoContent|error {
+        check deleteUser(id);
+        return http:NO_CONTENT;
+    }
+
+    // GET /social_media/users/{id}/posts
+    resource function get users/[int id]/posts() returns PostMeta[]|UserNotFound|error {
+        return getPostsByUser(id);
+    }
+
+    // POST /social_media/users/{id}/posts
+    resource function post users/[int id]/posts(NewPost newPost) returns http:Created|UserNotFound|error {
+        check addPost(id, newPost);
+        return http:CREATED;
+    }
+}
