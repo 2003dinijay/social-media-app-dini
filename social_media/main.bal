@@ -30,8 +30,17 @@ service /social_media on new http:Listener(9090) {
     }
 
     // POST /social_media/users/{id}/posts
-    resource function post users/[int id]/posts(NewPost newPost) returns http:Created|UserNotFound|error {
-        check addPost(id, newPost);
-        return http:CREATED;
+  resource function post users/[int id]/posts(NewPost newPost) returns http:Created|UserNotFound|PostForbidden|error {
+    error? result = addPost(id, newPost);
+    if result is error {
+        string msg = result.message();
+        if msg == "User not found" {
+            return <UserNotFound>{};
+        }
+        if msg == "Post content is not allowed" {
+            return <PostForbidden>{};
+        }
+        return result;
     }
+    return http:CREATED;
 }
