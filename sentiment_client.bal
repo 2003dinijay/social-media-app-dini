@@ -7,7 +7,7 @@ final http:Client sentimentClient = check new (sentimentServiceUrl, {
         count: 3,
         interval:1,
         backOffFactor: 2,
-        maxWaitTime: 10
+        maxWaitInterval: 10
     }
 });
 
