@@ -54,13 +54,13 @@ isolated function getPostsByUser(int userId) returns PostMeta[]|UserNotFound|err
 }
 
 isolated function addPost(int userId, NewPost newPost) returns error? {
-    // First check if user exists
     User|UserNotFound|error user = getUserById(userId);
     if user is UserNotFound {
         return error("User not found");
     }
+    Post post = transformPost(newPost, userId);
     _ = check dbClient->execute(`
         INSERT INTO posts (description, category, tags, created_date, user_id) 
-        VALUES (${newPost.description}, ${newPost.category}, ${newPost.tags}, CURDATE(), ${userId})
+        VALUES (${post.description}, ${post.category}, ${post.tags}, ${post.created_date}, ${post.user_id})
     `);
 }
