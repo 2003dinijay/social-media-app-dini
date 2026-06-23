@@ -1,6 +1,6 @@
 import ballerina/http;
 
-configurable string sentimentServiceUrl = "http://localhost:9098";
+configurable string sentimentServiceUrl = "http://localhost:9000";
 
 final http:Client sentimentClient = check new (sentimentServiceUrl);
 
