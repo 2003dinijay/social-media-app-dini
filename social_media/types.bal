@@ -52,20 +52,17 @@ public type PostForbidden record {|
     string body = "Post content is not allowed";
 |};
 
-
-//sentiment analysis request record
-
-public type SentimentRequest record{|
+// Sentiment analysis request
+public type SentimentRequest record {|
     string text;
 |};
 
-//sentiment analysis response record
-
-public type sentimentResponse record{|
+// Sentiment analysis response
+public type SentimentResponse record {|
     record {|
+        decimal neg;
+        decimal neutral;
+        decimal pos;
+    |} probability;
     string label;
-    float probability;
-|}[] probabilities;
-string predictedLabel;
-
 |};
