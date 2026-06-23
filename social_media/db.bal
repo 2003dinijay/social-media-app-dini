@@ -54,10 +54,19 @@ isolated function getPostsByUser(int userId) returns PostMeta[]|UserNotFound|err
 }
 
 isolated function addPost(int userId, NewPost newPost) returns error? {
+    // Check if user exists
     User|UserNotFound|error user = getUserById(userId);
     if user is UserNotFound {
         return error("User not found");
     }
+
+    // Check sentiment
+    string sentiment = check analyzeSentiment(newPost.description);
+    if sentiment == "negative" {
+        return error("Post content is not allowed");
+    }
+
+    // Transform and save
     Post post = transformPost(newPost, userId);
     _ = check dbClient->execute(`
         INSERT INTO posts (description, category, tags, created_date, user_id) 
