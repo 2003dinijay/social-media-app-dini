@@ -57,7 +57,7 @@ public type PostForbidden record {|
 
 public type SentimentRequest record{|
     string text;
-|}
+|};
 
 //sentiment analysis response record
 
