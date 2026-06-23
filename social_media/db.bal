@@ -1,35 +1,60 @@
-// Stub functions - will connect to MySQL in Feature 2
+import ballerinax/mysql;
+import ballerinax/mysql.driver as _;
+import ballerina/sql;
+
+// Database client
+final mysql:Client dbClient = check new (
+    host = "localhost",
+    user = "root",
+    password = "Dinithi@123",
+    database = "social_media_database",
+    port = 3306
+);
+
 isolated function getAllUsers() returns User[]|error {
-    return [
-        {id: 1, name: "Dini", birth_date: "2003-01-01", mobile_number: "+94771234567"},
-        {id: 2, name: "Ravi", birth_date: "1995-05-10", mobile_number: "+94771234568"}
-    ];
+    stream<User, sql:Error?> userStream = dbClient->query(`SELECT id, name, birth_date, mobile_number FROM users`);
+    return from var user in userStream select user;
 }
 
 isolated function getUserById(int id) returns User|UserNotFound|error {
-    if id == 1 {
-        return {id: 1, name: "Dini", birth_date: "2003-01-01", mobile_number: "+94771234567"};
+    User|sql:Error result = dbClient->queryRow(`SELECT id, name, birth_date, mobile_number FROM users WHERE id = ${id}`);
+    if result is sql:NoRowsError {
+        return <UserNotFound>{};
     }
-    return <UserNotFound>{};
+    return result;
 }
 
 isolated function addUser(NewUser newUser) returns error? {
-    // Will insert into DB later
+    _ = check dbClient->execute(`
+        INSERT INTO users (name, birth_date, mobile_number) 
+        VALUES (${newUser.name}, ${newUser.birth_date}, ${newUser.mobile_number})
+    `);
 }
 
 isolated function deleteUser(int id) returns error? {
-    // Will delete from DB later
+    _ = check dbClient->execute(`DELETE FROM users WHERE id = ${id}`);
 }
 
-isolated function getPostsByUser(int id) returns PostMeta[]|UserNotFound|error {
-    if id == 1 {
-        return [
-            {id: 1, description: "Learning Ballerina!", category: "education", created_date: "2024-01-01", tags: "ballerina,wso2"}
-        ];
+isolated function getPostsByUser(int userId) returns PostMeta[]|UserNotFound|error {
+    // First check if user exists
+    User|UserNotFound|error user = getUserById(userId);
+    if user is UserNotFound {
+        return <UserNotFound>{};
     }
-    return <UserNotFound>{};
+    stream<PostMeta, sql:Error?> postStream = dbClient->query(`
+        SELECT id, description, category, created_date, tags FROM posts WHERE user_id = ${userId}
+    `);
+    return from var post in postStream select post;
 }
 
 isolated function addPost(int userId, NewPost newPost) returns error? {
-    // Will insert into DB later
+    // First check if user exists
+    User|UserNotFound|error user = getUserById(userId);
+    if user is UserNotFound {
+        return error("User not found");
+    }
+    _ = check dbClient->execute(`
+        INSERT INTO posts (description, category, tags, created_date, user_id) 
+        VALUES (${newPost.description}, ${newPost.category}, ${newPost.tags}, CURDATE(), ${userId})
+    `);
 }
