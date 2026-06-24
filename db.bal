@@ -2,6 +2,8 @@ import ballerinax/mysql;
 import ballerinax/mysql.driver as _;
 import ballerina/sql;
 
+
+
 configurable string dbHost = "localhost";
 configurable string dbUser = "root";
 configurable string dbPassword = ?;
