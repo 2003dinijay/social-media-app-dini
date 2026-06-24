@@ -59,10 +59,10 @@ users ──< followers >── users
 | 3 | Configurability (Config.toml)  | ✅ Done |
 | 4 | Data transformation            | ✅ Done |
 | 5 | HTTP Client                    | ✅ Done |
-| 6 | Resiliency & Retry             | 🔄 In Progress |
-| 7 | Writing tests                  | ⏳ Pending |
-| 8 | Slack connector                | ⏳ Pending |
-| 9 | OpenAPI & client stubs         | ⏳ Pending |
+| 6 | Resiliency & Retry             | ✅ Done |
+| 7 | Writing tests                  | ✅ Done |
+| 8 | Slack connector                | ✅ Done |
+| 9 | OpenAPI & client stubs         | 🔄 In Progress |
 | 10| Validations                    | ⏳ Pending |
 | 11| Security — OAuth2              | ⏳ Pending |
 | 12| Error handlers                 | ⏳ Pending |
