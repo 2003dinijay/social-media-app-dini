@@ -1,3 +1,4 @@
+import ballerina/constraint;
 import ballerina/http;
 
 // Existing user record (from database)
@@ -8,10 +9,24 @@ public type User record {|
     string mobile_number;
 |};
 
-// For creating a new user (no id yet)
+// For creating a new user (with strict constraints)
 public type NewUser record {|
+    @constraint:String {
+        minLength: 2,
+        maxLength: 100
+    }
     string name;
+
+    // Enforces ISO 8601 date format format (YYYY-MM-DD)
+    @constraint:String {
+        pattern: re `^\d{4}-\d{2}-\d{2}$`
+    }
     string birth_date;
+
+    // Enforces international format (e.g., +94771234567)
+    @constraint:String {
+        pattern: re `^\+\d{10,12}$`
+    }
     string mobile_number;
 |};
 
@@ -24,10 +39,24 @@ public type PostMeta record {|
     string tags;
 |};
 
-// For creating a new post
+// For creating a new post (with strict constraints)
 public type NewPost record {|
+    @constraint:String {
+        minLength: 1,
+        maxLength: 500
+    }
     string description;
+
+    @constraint:String {
+        minLength: 2,
+        maxLength: 50
+    }
     string category;
+
+    // Enforces comma-separated tags with no spaces around commas, or a single tag
+    @constraint:String {
+        pattern: re `^[a-zA-Z0-9]+(,[a-zA-Z0-9]+)*$`
+    }
     string tags;
 |};
 
@@ -68,4 +97,3 @@ public type SentimentResponse record {|
     |} probability;
     string label;
 |};
-
