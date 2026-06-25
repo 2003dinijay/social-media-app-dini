@@ -1,0 +1,283 @@
+openapi: 3.0.1
+info:
+  title: Social Media
+  version: 0.1.0
+servers:
+- url: "{server}:{port}/social_media"
+  variables:
+    server:
+      default: http://localhost
+    port:
+      default: "9090"
+paths:
+  /users:
+    get:
+      operationId: getUsers
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        "500":
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorPayload"
+    post:
+      operationId: postUsers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewUser"
+        required: true
+      responses:
+        "201":
+          description: Created
+        "500":
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorPayload"
+        "400":
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorPayload"
+  /users/{id}:
+    get:
+      operationId: getUsersId
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "500":
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorPayload"
+        "404":
+          description: NotFound
+          content:
+            text/plain:
+              schema:
+                type: string
+        "400":
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorPayload"
+    delete:
+      operationId: deleteUsersId
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "500":
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorPayload"
+        "204":
+          description: NoContent
+        "400":
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorPayload"
+  /users/{id}/posts:
+    get:
+      operationId: getUsersIdPosts
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PostMeta"
+        "500":
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorPayload"
+        "404":
+          description: NotFound
+          content:
+            text/plain:
+              schema:
+                type: string
+        "400":
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorPayload"
+    post:
+      operationId: postUsersIdPosts
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewPost"
+        required: true
+      responses:
+        "201":
+          description: Created
+        "500":
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorPayload"
+        "403":
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                type: string
+        "404":
+          description: NotFound
+          content:
+            text/plain:
+              schema:
+                type: string
+        "400":
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorPayload"
+components:
+  schemas:
+    ErrorPayload:
+      required:
+      - message
+      - method
+      - path
+      - reason
+      - status
+      - timestamp
+      type: object
+      properties:
+        timestamp:
+          type: string
+        status:
+          type: integer
+          format: int64
+        reason:
+          type: string
+        message:
+          type: string
+        path:
+          type: string
+        method:
+          type: string
+    NewPost:
+      required:
+      - category
+      - description
+      - tags
+      type: object
+      properties:
+        description:
+          type: string
+        category:
+          type: string
+        tags:
+          type: string
+      additionalProperties: false
+    NewUser:
+      required:
+      - birth_date
+      - mobile_number
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+        birth_date:
+          type: string
+        mobile_number:
+          type: string
+      additionalProperties: false
+    PostMeta:
+      required:
+      - category
+      - created_date
+      - description
+      - id
+      - tags
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        description:
+          type: string
+        category:
+          type: string
+        created_date:
+          type: string
+        tags:
+          type: string
+      additionalProperties: false
+    User:
+      required:
+      - birth_date
+      - id
+      - mobile_number
+      - name
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        birth_date:
+          type: string
+        mobile_number:
+          type: string
+      additionalProperties: false
