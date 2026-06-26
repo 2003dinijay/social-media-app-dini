@@ -1,0 +1,84 @@
+name: Sync Project Board to README
+
+on:
+  schedule:
+    # Runs automatically every day at midnight to sync your progress
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Allows you to click a manual "Run workflow" button anytime!
+
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Fetch Project Tasks
+        env:
+          GH_TOKEN: ${{ secrets.PROJECT_BOARD_TOKEN }}
+        run: |
+          # Use GitHub CLI to query your specific project board columns
+          # This example fetches items from your "Done" status
+          gh api graphql -f query='
+            query($org: String!, $number: Int!) {
+              organization(login: $org) {
+                projectV2(number: $number) {
+                  items(first: 20) {
+                    nodes {
+                      fieldValueByName(name: "Status") {
+                        ... on ProjectV2ItemFieldSingleSelectValue {
+                          name
+                        }
+                      }
+                      content {
+                        ... on Issue { title url }
+                        ... on PullRequest { title url }
+                      }
+                    }
+                  }
+                }
+              }
+            }' -f org="YOUR_GITHUB_USERNAME_OR_ORG" -F number=YOUR_PROJECT_NUMBER > project_data.json
+
+      - name: Parse Data and Update README
+        run: |
+          # Quick python snippet to parse the JSON data and build the Markdown progress list
+          python3 -c '
+          import json
+          with open("project_data.json") as f:
+              data = json.load(f)
+          
+          items = data["data"]["organization"]["projectV2"]["items"]["nodes"]
+          done_items = []
+          for item in items:
+              status = item.get("fieldValueByName", {}).get("name", "")
+              if status == "Done" and "content" in item:
+                  title = item["content"].get("title", "Untitled")
+                  done_items.append(f"- [x] {title}")
+          
+          markdown_content = "\n".join(done_items)
+          
+          # Read existing README
+          with open("README.md", "r") as rm:
+              readme = rm.read()
+          
+          # Replace placeholder tags
+          start_tag = ""
+          end_tag = ""
+          
+          if start_tag in readme and end_tag in readme:
+              before = readme.split(start_tag)[0]
+              after = readme.split(end_tag)[1]
+              new_readme = f"{before}{start_tag}\n### Completed Features\n{markdown_content}\n{end_tag}{after}"
+              with open("README.md", "w") as rm:
+                  rm.write(new_readme)
+          '
+
+      - name: Commit changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "docs: sync project board progress to README [skip ci]" || echo "No changes to commit"
+          git push
