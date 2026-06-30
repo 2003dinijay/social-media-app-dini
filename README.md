@@ -76,6 +76,7 @@ users ──< followers >── users
 ### Prerequisites
 - Ballerina 2201.13.4 or higher
 - MySQL 8.0 or higher
+- Node.js 18+ (only needed for the `frontend/` React app)
 
 ### 1. Clone the Repository
 ```bash
@@ -89,8 +90,8 @@ mysql -u root -p -e "CREATE DATABASE social_media_database;"
 mysql -u root -p social_media_database < db-setup/init.sql
 ```
 
-### 3. Configure the App
-Create `social_media/Config.toml`:
+### 3. Configure the Backend
+Create `backend/Config.toml`:
 ```toml
 dbHost = "localhost"
 dbUser = "root"
@@ -99,13 +100,22 @@ dbName = "social_media_database"
 dbPort = 3306
 ```
 
-### 4. Run the Service
+### 4. Run the Backend
 ```bash
-cd social_media
+cd backend
 bal run
 ```
 
-The service starts on **http://localhost:9090**
+The service starts on **https://localhost:9090**
+
+### 5. Run the Frontend (optional)
+A React app for exercising the API with WSO2 Identity Server login lives in
+`frontend/` — see [`frontend/README.md`](frontend/README.md) for setup.
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
 ---
 
@@ -113,20 +123,28 @@ The service starts on **http://localhost:9090**
 
 ```
 social-media-app-dini/
-└── social_media/
-    ├── Ballerina.toml       # Package config & dependencies
-    ├── Config.toml          # Environment config (not committed)
-    ├── main.bal             # Service & resource functions
-    ├── types.bal            # Data type definitions
-    ├── db.bal               # Database access functions
-    └── transform.bal        # Data transformation logic
+├── backend/                  # Ballerina service
+│   ├── Ballerina.toml        # Package config & dependencies
+│   ├── Config.toml           # Environment config (not committed)
+│   ├── main.bal              # Service & resource functions
+│   ├── types.bal             # Data type definitions
+│   ├── db.bal                # Database access functions
+│   ├── transform.bal         # Data transformation logic
+│   ├── error_interceptor.bal # Error handling
+│   ├── sentiment_client.bal  # External HTTP client
+│   ├── resources/            # TLS cert/key for the secured listener
+│   └── tests/                # Ballerina tests
+└── frontend/                  # React + Vite app (WSO2 Identity login demo)
+    ├── src/
+    └── README.md
 ```
 
 ---
 
 ## 🔒 Security Note
 
-`Config.toml` contains sensitive credentials and is excluded from version control via `.gitignore`. Never commit this file.
+`backend/Config.toml` contains sensitive credentials and is excluded from
+version control via `.gitignore`. Never commit this file.
 
 ---
 
@@ -134,4 +152,3 @@ social-media-app-dini/
 
 **Dinijay**- WSO2 Intern  
 GitHub: [@2003dinijay](https://github.com/2003dinijay)
-```
